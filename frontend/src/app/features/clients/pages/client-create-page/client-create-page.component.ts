@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { ClientFormComponent } from '../components/client-form/client-form.component';
-import { ClientService } from '../services/client.service';
-import { CreateClientRequest } from '../models/client.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ClientFormComponent } from '../../components/client-form/client-form.component';
+import { ClientService } from '../../services/client.service';
+import { CreateClientRequest } from '../../models/client.model';
 
 @Component({
   selector: 'app-client-create-page',
@@ -28,7 +29,7 @@ export class ClientCreatePageComponent {
         this.loading.set(false);
         this.router.navigate(['/clients']);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         console.error('Create client error:', err);
         

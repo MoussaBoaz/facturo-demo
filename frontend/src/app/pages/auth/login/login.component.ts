@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -136,12 +137,12 @@ export class LoginComponent {
     
     // VRAI APPEL API AU BACKEND LARAVEL
     this.authService.login(email, password).subscribe({
-      next: (response) => {
+      next: () => {
         this.loading.set(false);
         // Redirection vers la page demandée ou dashboard
         this.router.navigate([this.returnUrl]);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         console.error('Login error:', err);
         

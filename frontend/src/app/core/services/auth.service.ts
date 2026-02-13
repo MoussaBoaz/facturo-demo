@@ -1,18 +1,19 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router, CanActivateFn, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { User } from '../models/user.model';
 
 interface LoginResponse {
   access_token: string;
   token_type: string;
   expires_in: number;
-  user: any;
+  user: User;
 }
 
 interface RegisterResponse {
   message: string;
-  user: any;
+  user: User;
   access_token: string;
   token_type: string;
   expires_in: number;
@@ -69,7 +70,7 @@ export class AuthService {
     if (token) {
       this.http.post(`${this.getApiUrl()}/auth/logout`, {}).subscribe({
         next: () => this.clearAndRedirect(),
-        error: () => this.clearAndRedirect() // Même si l'API échoue, on déconnecte localement
+        error: (_err: HttpErrorResponse) => this.clearAndRedirect() // Même si l'API échoue, on déconnecte localement
       });
     } else {
       this.clearAndRedirect();
@@ -95,12 +96,12 @@ export class AuthService {
     localStorage.setItem(this.TOKEN_KEY, token);
   }
   
-  getUser(): any | null {
+  getUser(): User | null {
     const user = localStorage.getItem(this.USER_KEY);
     return user ? JSON.parse(user) : null;
   }
   
-  setUser(user: any): void {
+  setUser(user: User): void {
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
   }
   
@@ -120,7 +121,7 @@ export class AuthService {
 
 // Guard pour routes protégées (nécessite authentification)
 export const authGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
+  _route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
   const authService = inject(AuthService);

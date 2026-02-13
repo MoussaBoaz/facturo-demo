@@ -1,9 +1,10 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../core/services/auth.service';
-import { ClientService } from '../services/client.service';
-import { Client } from '../models/client.model';
+import { ClientService } from '../../services/client.service';
+import { Client } from '../../models/client.model';
 
 @Component({
   selector: 'app-client-list',
@@ -38,7 +39,7 @@ export class ClientListComponent implements OnInit {
         this.clients.set(clients);
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         console.error('Load clients error:', err);
         
