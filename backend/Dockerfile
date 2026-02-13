@@ -31,7 +31,15 @@ RUN composer install --no-dev --optimize-autoloader
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
+# Create startup script
+RUN echo '#!/bin/bash\n\
+php artisan config:cache\n\
+php artisan route:cache\n\
+php artisan migrate --force\n\
+php artisan serve --host 0.0.0.0 --port 10000\n\
+' > /start.sh && chmod +x /start.sh
+
 EXPOSE 10000
 
-# Start PHP built-in server for Render
-CMD php artisan serve --host 0.0.0.0 --port 10000
+# Start the application
+CMD ["/start.sh"]
