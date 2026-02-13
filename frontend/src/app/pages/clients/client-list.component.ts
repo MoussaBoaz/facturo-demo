@@ -68,17 +68,6 @@ import { ClientService, Client } from '../../core/services/client.service';
           </a>
         </div>
 
-        <!-- Loading -->
-        @if (loading()) {
-          <div class="flex justify-center items-center h-64">
-            <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          </div>
-        }
-
-        <!-- Error -->
         @if (errorMessage()) {
           <div class="rounded-md bg-red-50 p-4 mb-6">
             <div class="flex">
@@ -90,21 +79,18 @@ import { ClientService, Client } from '../../core/services/client.service';
           </div>
         }
 
-        <!-- Filters -->
-        @if (!loading()) {
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-            <div class="flex flex-wrap gap-4">
-              <div class="flex-1 min-w-[200px]">
-                <input type="text" 
-                       placeholder="Rechercher un client..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-              </div>
-            </div>
+        <!-- Loading -->
+        @if (loading()) {
+          <div class="flex justify-center py-12">
+            <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
           </div>
         }
 
         <!-- Clients Table -->
-        @if (!loading() && clients().length > 0) {
+        @if (!loading()) {
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
@@ -143,29 +129,16 @@ import { ClientService, Client } from '../../core/services/client.service';
                       <button class="text-gray-400 hover:text-gray-600">⋯</button>
                     </td>
                   </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                      Aucun client trouvé.
+                      <a routerLink="/clients/new" class="text-indigo-600 hover:text-indigo-800 ml-1">Créer un client</a>
+                    </td>
+                  </tr>
                 }
               </tbody>
             </table>
-          </div>
-        }
-
-        <!-- Empty state -->
-        @if (!loading() && clients().length === 0) {
-          <div class="text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun client</h3>
-            <p class="mt-1 text-sm text-gray-500">Commencez par créer votre premier client.</p>
-            <div class="mt-6">
-              <a routerLink="/clients/new" 
-                 class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Nouveau client
-              </a>
-            </div>
           </div>
         }
       </main>
@@ -178,7 +151,7 @@ export class ClientListComponent implements OnInit {
   private clientService: ClientService = inject(ClientService);
   
   clients = signal<Client[]>([]);
-  loading = signal(true);
+  loading = signal(false);
   errorMessage = signal('');
   
   ngOnInit() {
@@ -186,7 +159,6 @@ export class ClientListComponent implements OnInit {
       this.authService.logout();
       return;
     }
-    
     this.loadClients();
   }
   
@@ -195,8 +167,8 @@ export class ClientListComponent implements OnInit {
     this.errorMessage.set('');
     
     this.clientService.getClients().subscribe({
-      next: (data) => {
-        this.clients.set(data);
+      next: (clients) => {
+        this.clients.set(clients);
         this.loading.set(false);
       },
       error: (err) => {
