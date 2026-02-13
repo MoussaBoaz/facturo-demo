@@ -22,6 +22,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
+# Copy startup script first
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
 # Copy all files
 COPY . .
 
@@ -38,8 +42,4 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 EXPOSE 10000
 
 # Start the application
-CMD composer run-script post-autoload-dump 2>/dev/null || true && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan migrate --force && \
-    php artisan serve --host 0.0.0.0 --port 10000
+CMD ["/start.sh"]
