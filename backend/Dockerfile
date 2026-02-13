@@ -25,6 +25,9 @@ WORKDIR /var/www
 # Copy all files
 COPY . .
 
+# Create required directories
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/testing storage/framework/views storage/logs bootstrap/cache
+
 # Install dependencies (skip scripts for now, will run at runtime)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
