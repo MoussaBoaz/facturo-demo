@@ -16,11 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Global middleware - applied to all routes
         $middleware->use([
+            \App\Http\Middleware\ForceCors::class, // Force CORS en premier
             \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
             \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
             \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
             \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-            HandleCors::class, // CORS global pour toutes les routes
             SecurityHeaders::class,
         ]);
         
