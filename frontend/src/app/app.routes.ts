@@ -5,8 +5,7 @@ import { RegisterComponent } from './pages/auth/register/register.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { InvoiceListComponent } from './pages/invoices/invoice-list.component';
 import { InvoiceCreateComponent } from './pages/invoices/invoice-create.component';
-import { ClientListComponent } from './pages/clients/client-list.component';
-import { ClientCreateComponent } from './pages/clients/client-create.component';
+import { ClientListComponent, ClientCreatePageComponent } from './features/clients';
 import { authGuard, publicGuard } from './core/services/auth.service';
 
 export const routes: Routes = [
@@ -35,7 +34,7 @@ export const routes: Routes = [
   },
   { 
     path: 'clients/new', 
-    component: ClientCreateComponent, 
+    component: ClientCreatePageComponent, 
     canActivate: [authGuard] 
   },
   { path: '**', redirectTo: '' }

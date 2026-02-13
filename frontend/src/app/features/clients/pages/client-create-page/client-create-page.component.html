@@ -1,0 +1,38 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <a routerLink="/clients" class="text-gray-500 hover:text-gray-700 mr-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+          </a>
+          <h1 class="text-2xl font-bold text-gray-900">Nouveau Client</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    @if (errorMessage()) {
+      <div class="rounded-md bg-red-50 p-4 mb-6">
+        <div class="flex">
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800">Erreur</h3>
+            <p class="text-sm text-red-700 mt-1">{{ errorMessage() }}</p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="max-w-2xl bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <app-client-form 
+        [loading]="loading()"
+        (save)="onSave($event)"
+        (cancel)="onCancel()">
+      </app-client-form>
+    </div>
+  </div>
+</div>
