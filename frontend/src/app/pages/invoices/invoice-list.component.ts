@@ -180,7 +180,7 @@ export class InvoiceListComponent {
       paid: 'inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800',
       overdue: 'inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800'
     };
-    return classes[status] || classes.draft;
+    return classes[status] || classes['draft'];
   }
   
   logout(): void {
