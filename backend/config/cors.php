@@ -19,14 +19,17 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'http://localhost:4200',                   // Angular dev server
-        'https://facturo-demo.vercel.app',         // Production frontend
-        'https://facturo-demo-test.vercel.app',    // Test deployment
-        env('FRONTEND_URL', '*'),
-    ],
+    'allowed_origins' => array_filter([
+        'http://localhost:4200',                    // Angular dev server
+        env('FRONTEND_URL'),                        // Production frontend (from env)
+        'https://facturo-demo.vercel.app',          // Fallback production
+        'https://facturo-demo-test.vercel.app',     // Test deployment
+    ]),
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        // Autoriser tous les sous-domaines vercel.app pour les previews
+        '/^https:\/\/.*\.vercel\.app$/',
+    ],
 
     'allowed_headers' => ['*'],
 
