@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "name": "facturo-frontend",
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "frontend/dist/facturo/browser"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/dist/facturo/browser/index.html"
+    }
+  ],
+  "env": {
+    "NG_CLI_ENVIRONMENT": "production"
+  }
+}

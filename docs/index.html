@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel 12 + Angular 19 Starter — Production-Ready Boilerplate</title>
+    <meta name="description" content="Build your SaaS faster with Laravel 12 + Angular 19. JWT auth, Docker, CI/CD included. Latest stable versions.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1a1a1a; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Header */
+        header { background: #fff; border-bottom: 1px solid #e5e5e5; position: sticky; top: 0; z-index: 100; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; }
+        .logo { font-size: 24px; font-weight: 700; color: #4f46e5; text-decoration: none; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { color: #4b5563; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { color: #4f46e5; }
+        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .btn-primary { background: #4f46e5; color: white; }
+        .btn-primary:hover { background: #4338ca; }
+        .btn-secondary { background: #f3f4f6; color: #1f2937; }
+        .btn-secondary:hover { background: #e5e7eb; }
+        
+        /* Hero */
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 100px 0; text-align: center; }
+        .hero h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
+        .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 40px; }
+        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .hero .btn { padding: 16px 32px; font-size: 18px; }
+        .hero .btn-secondary { background: rgba(255,255,255,0.2); color: white; }
+        .hero .btn-secondary:hover { background: rgba(255,255,255,0.3); }
+        
+        /* Features */
+        .features { padding: 80px 0; background: #f9fafb; }
+        .features h2 { text-align: center; font-size: 36px; margin-bottom: 60px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
+        .feature { background: white; padding: 32px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .feature-icon { width: 48px; height: 48px; background: #eef2ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 24px; }
+        .feature h3 { font-size: 20px; margin-bottom: 12px; }
+        .feature p { color: #6b7280; }
+        
+        /* Pricing */
+        .pricing { padding: 80px 0; }
+        .pricing h2 { text-align: center; font-size: 36px; margin-bottom: 60px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; max-width: 900px; margin: 0 auto; }
+        .pricing-card { border: 2px solid #e5e7eb; border-radius: 16px; padding: 40px; text-align: center; }
+        .pricing-card.popular { border-color: #4f46e5; position: relative; }
+        .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #4f46e5; color: white; padding: 4px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+        .pricing-card h3 { font-size: 24px; margin-bottom: 16px; }
+        .price { font-size: 48px; font-weight: 800; margin-bottom: 24px; }
+        .price span { font-size: 18px; font-weight: 400; color: #6b7280; }
+        .pricing-card ul { list-style: none; text-align: left; margin-bottom: 32px; }
+        .pricing-card li { padding: 8px 0; color: #4b5563; }
+        .pricing-card li::before { content: "✓"; color: #10b981; font-weight: bold; margin-right: 8px; }
+        
+        /* CTA */
+        .cta { background: #1f2937; color: white; padding: 80px 0; text-align: center; }
+        .cta h2 { font-size: 36px; margin-bottom: 24px; }
+        .cta p { font-size: 18px; opacity: 0.8; margin-bottom: 40px; }
+        
+        /* Footer */
+        footer { background: #111827; color: #9ca3af; padding: 40px 0; text-align: center; }
+        footer a { color: #9ca3af; text-decoration: none; margin: 0 16px; }
+        footer a:hover { color: white; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 18px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">⚡ Laravel 12 + Angular 19 Starter</a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#pricing">Pricing</a>
+                <a href="https://github.com/MoussaBoaz/laravel-angular-starter" target="_blank">GitHub</a>
+                <a href="#pricing" class="btn btn-primary">Get Started</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Build Your SaaS in Days,<br>Not Months</h1>
+            <p>Production-ready Laravel 12 + Angular 19 boilerplate with JWT auth, Docker, CI/CD, and everything you need to launch fast. Always up-to-date.</p>
+            <div class="hero-buttons">
+                <a href="https://github.com/MoussaBoaz/laravel-angular-starter" class="btn btn-primary" target="_blank">View on GitHub</a>
+                <a href="#pricing" class="btn btn-secondary">Get Pro Version</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Everything You Need to Start</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">🔐</div>
+                    <h3>JWT Authentication</h3>
+                    <p>Complete auth system with login, register, password reset, and token refresh. Secure and ready to use.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🐳</div>
+                    <h3>Docker Ready</h3>
+                    <p>One command to start the entire stack. Laravel, Angular, MySQL, Redis — all containerized.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <h3>CI/CD Pipeline</h3>
+                    <p>GitHub Actions configured for automated testing and deployment. Push to deploy.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Latest Stack</h3>
+                    <p>Laravel 12, Angular 19, PHP 8.4, TypeScript 5.7. Built with cutting-edge technologies.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Responsive Design</h3>
+                    <p>Beautiful UI that works on desktop, tablet, and mobile. Ready for your users.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🧪</div>
+                    <h3>Tested</h3>
+                    <p>PHPUnit tests included for authentication. Start with confidence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2>Simple, One-Time Pricing</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Open Source</h3>
+                    <div class="price">Free</div>
+                    <ul>
+                        <li>JWT Authentication</li>
+                        <li>User CRUD</li>
+                        <li>Docker Setup</li>
+                        <li>CI/CD Pipeline</li>
+                        <li>MIT License</li>
+                    </ul>
+                    <a href="https://github.com/MoussaBoaz/laravel-angular-starter" class="btn btn-secondary" target="_blank">Download Free</a>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <h3>Pro Version</h3>
+                    <div class="price">€129<span>/one-time</span></div>
+                    <ul>
+                        <li>Everything in Free</li>
+                        <li>Role-based Permissions</li>
+                        <li>Admin Dashboard</li>
+                        <li>Social Login (Google, GitHub)</li>
+                        <li>File Uploads</li>
+                        <li>Stripe Integration</li>
+                        <li>Email Templates</li>
+                        <li>Priority Support</li>
+                    </ul>
+                    <a href="mailto:contact@moussaboaz.dev?subject=Pro%20Version%20Inquiry" class="btn btn-primary">Get Pro Access</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Build Your SaaS?</h2>
+            <p>Join developers who ship faster with our boilerplate.</p>
+            <a href="https://github.com/MoussaBoaz/laravel-angular-starter" class="btn btn-primary" target="_blank">Get Started Free</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Built by <a href="https://github.com/MoussaBoaz" target="_blank">@MoussaBoaz</a></p>
+            <p style="margin-top: 16px;">
+                <a href="https://github.com/MoussaBoaz/laravel-angular-starter" target="_blank">GitHub</a>
+                <a href="mailto:contact@moussaboaz.dev">Contact</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

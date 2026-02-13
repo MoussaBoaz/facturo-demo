@@ -1,0 +1,51 @@
+services:
+  - type: web
+    name: laravel-api
+    runtime: docker
+    repo: https://github.com/MoussaBoaz/laravel-angular-starter
+    dockerfilePath: ./backend/Dockerfile
+    buildFilter:
+      paths:
+        - backend/**
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: https://laravel-api.onrender.com
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromDatabase:
+          name: laravel-mysql
+          property: host
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: laravel
+      - key: DB_USERNAME
+        value: laravel
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: laravel-mysql
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_DRIVER
+        value: sync
+    healthCheckPath: /api/health
+    plan: free
+
+databases:
+  - name: laravel-mysql
+    databaseName: laravel
+    user: laravel
+    plan: free
+    ipAllowList: []

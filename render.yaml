@@ -1,0 +1,55 @@
+services:
+  - type: web
+    name: facturo-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: https://facturo-api.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: facturo-db
+          property: host
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        value: facturo
+      - key: DB_USERNAME
+        value: facturo
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: facturo-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+    healthCheckPath: /api/health
+    plan: free
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:cache
+      php artisan route:cache
+      php artisan migrate --force
+    startCommand: |
+      php artisan serve --host 0.0.0.0 --port 10000
+
+databases:
+  - name: facturo-db
+    databaseName: facturo
+    user: facturo
+    plan: free
+    ipAllowList: []
