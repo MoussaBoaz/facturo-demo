@@ -48,13 +48,13 @@ import { RouterLink } from '@angular/router';
               <tbody class="divide-y divide-gray-200">
                 <tr>
                   <td class="px-6 py-4 font-medium">ABC Company</td>
-                  <td class="px-6 py-4">contact@abc.com</td>
+                  <td class="px-6 py-4">contact&#64;abc.com</td>
                   <td class="px-6 py-4">ABC SARL</td>
                   <td class="px-6 py-4">+32 123 456 789</td>
                 </tr>
                 <tr>
                   <td class="px-6 py-4 font-medium">XYZ Sarl</td>
-                  <td class="px-6 py-4">info@xyz.com</td>
+                  <td class="px-6 py-4">info&#64;xyz.com</td>
                   <td class="px-6 py-4">XYZ Industries</td>
                   <td class="px-6 py-4">+32 987 654 321</td>
                 </tr>
