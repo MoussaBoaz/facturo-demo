@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 interface DashboardStats {
   total_invoices: number;
@@ -21,7 +22,7 @@ interface Invoice {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
     <div class="min-h-screen bg-gray-50">
       <!-- Sidebar -->
@@ -164,8 +165,9 @@ interface Invoice {
     </div>
   `
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   private router = inject(Router);
+  private authService = inject(AuthService);
   
   stats = signal<DashboardStats>({
     total_invoices: 12,
@@ -205,7 +207,14 @@ export class DashboardComponent {
     return classes[status] || classes['draft'];
   }
   
+  ngOnInit() {
+    // Vérification supplémentaire de l'authentification
+    if (!this.authService.isAuthenticated()) {
+      this.authService.logout();
+    }
+  }
+
   logout(): void {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }

@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-invoice-create',
@@ -186,9 +187,10 @@ import { Router, RouterLink } from '@angular/router';
     </div>
   `
 })
-export class InvoiceCreateComponent {
+export class InvoiceCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private authService = inject(AuthService);
   
   invoiceForm: FormGroup;
   loading = signal(false);
@@ -196,6 +198,12 @@ export class InvoiceCreateComponent {
   subtotal = signal(0);
   taxAmount = signal(0);
   total = signal(0);
+
+  ngOnInit() {
+    if (!this.authService.isAuthenticated()) {
+      this.authService.logout();
+    }
+  }
 
   constructor() {
     this.invoiceForm = this.fb.group({

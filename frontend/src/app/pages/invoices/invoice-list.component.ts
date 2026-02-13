@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 interface Invoice {
   id: number;
@@ -144,8 +145,9 @@ interface Invoice {
     </div>
   `
 })
-export class InvoiceListComponent {
+export class InvoiceListComponent implements OnInit {
   private router = inject(Router);
+  private authService = inject(AuthService);
   
   invoices = signal<Invoice[]>([
     { id: 1, invoice_number: 'INV-2026-0001', client_name: 'ABC Company', total: 1500, status: 'paid', issue_date: '2026-01-15', due_date: '2026-02-15' },
@@ -183,7 +185,13 @@ export class InvoiceListComponent {
     return classes[status] || classes['draft'];
   }
   
+  ngOnInit() {
+    if (!this.authService.isAuthenticated()) {
+      this.authService.logout();
+    }
+  }
+
   logout(): void {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }

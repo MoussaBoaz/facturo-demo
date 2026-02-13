@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 interface Client {
   id: number;
@@ -138,8 +139,9 @@ interface Client {
     </div>
   `
 })
-export class ClientListComponent {
+export class ClientListComponent implements OnInit {
   private router = inject(Router);
+  private authService = inject(AuthService);
   
   clients = signal<Client[]>([
     { id: 1, name: 'ABC Company', email: 'contact@abc.com', company: 'ABC SARL', phone: '+32 123 456 789', total_invoices: 5 },
@@ -153,7 +155,13 @@ export class ClientListComponent {
     return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   }
   
+  ngOnInit() {
+    if (!this.authService.isAuthenticated()) {
+      this.authService.logout();
+    }
+  }
+
   logout(): void {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }
