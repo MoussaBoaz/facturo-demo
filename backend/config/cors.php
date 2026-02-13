@@ -20,8 +20,9 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'http://localhost:4200',           // Angular dev server
-        'https://facturo-demo.vercel.app', // Production frontend
+        'http://localhost:4200',                   // Angular dev server
+        'https://facturo-demo.vercel.app',         // Production frontend
+        'https://facturo-demo-test.vercel.app',    // Test deployment
         env('FRONTEND_URL', '*'),
     ],
 
