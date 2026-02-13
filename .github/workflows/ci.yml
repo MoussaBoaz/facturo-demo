@@ -30,6 +30,12 @@ jobs:
         extensions: mbstring, pdo_mysql, redis, zip, gd
         coverage: xdebug
 
+    - name: Create bootstrap/cache directory
+      run: |
+        cd backend
+        mkdir -p bootstrap/cache
+        chmod -R 775 bootstrap/cache
+
     - name: Install Dependencies
       run: |
         cd backend

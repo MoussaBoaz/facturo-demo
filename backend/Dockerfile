@@ -22,6 +22,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
+# Create required directories BEFORE copying files (ensures they exist and are writable)
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/testing storage/framework/views storage/logs bootstrap/cache
+
+# Set permissions EARLY (before any composer operations)
+RUN chown -R www-data:www-data /var/www && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
 # Copy startup script first
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
@@ -29,14 +35,17 @@ RUN chmod +x /start.sh
 # Copy all files
 COPY . .
 
-# Create required directories
-RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/testing storage/framework/views storage/logs bootstrap/cache
+# Fix permissions again after copy
+RUN chown -R www-data:www-data /var/www && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Install dependencies (skip scripts for now, will run at runtime)
+# Switch to www-data for composer and runtime
+USER www-data
+
+# Install dependencies (now with correct permissions)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+# Switch back to root for CMD (some operations need root)
+USER root
 
 # Expose port
 EXPOSE 10000
