@@ -22,17 +22,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files first (for better caching)
-COPY composer.json composer.lock* ./
-
-# Install dependencies without running scripts (évite l'erreur artisan)
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-# Copy the rest of the application
+# Copy all files
 COPY . .
 
-# Now run the post-install scripts
-RUN composer run-script post-autoload-dump
+# Install dependencies (skip scripts for now, will run at runtime)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
@@ -41,4 +35,8 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 EXPOSE 10000
 
 # Start the application
-CMD php artisan config:cache && php artisan route:cache && php artisan migrate --force && php artisan serve --host 0.0.0.0 --port 10000
+CMD composer run-script post-autoload-dump 2>/dev/null || true && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan migrate --force && \
+    php artisan serve --host 0.0.0.0 --port 10000
