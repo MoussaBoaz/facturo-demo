@@ -24,6 +24,7 @@ return [
         env('FRONTEND_URL'),                        // Production frontend (from env)
         'https://facturo-demo.vercel.app',          // Fallback production
         'https://facturo-demo-test.vercel.app',     // Test deployment
+        '*',                                        // TEMP: Allow all origins for testing
     ]),
 
     'allowed_origins_patterns' => [
