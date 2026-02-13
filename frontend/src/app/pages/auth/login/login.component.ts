@@ -134,26 +134,27 @@ export class LoginComponent {
     
     const { email, password } = this.loginForm.value;
     
-    // Simuler un appel API (à remplacer par vrai appel)
-    setTimeout(() => {
-      this.loading.set(false);
-      
-      // MOCK: Simuler une réponse réussie
-      // Dans la vraie version, appeler le backend Laravel
-      if (email === 'demo@facturo.be' && password === 'password') {
-        // Stockage sécurisé du token
-        this.authService.setToken('mock_jwt_token_' + Date.now());
-        this.authService.setUser({
-          id: 1,
-          name: 'Demo User',
-          email: email
-        });
-        
+    // VRAI APPEL API AU BACKEND LARAVEL
+    this.authService.login(email, password).subscribe({
+      next: (response) => {
+        this.loading.set(false);
         // Redirection vers la page demandée ou dashboard
         this.router.navigate([this.returnUrl]);
-      } else {
-        this.errorMessage.set('Email ou mot de passe incorrect.');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        console.error('Login error:', err);
+        
+        if (err.status === 401) {
+          this.errorMessage.set('Email ou mot de passe incorrect.');
+        } else if (err.status === 422) {
+          this.errorMessage.set('Données invalides. Vérifiez votre email et mot de passe.');
+        } else if (err.status === 0) {
+          this.errorMessage.set('Impossible de contacter le serveur. Vérifiez votre connexion.');
+        } else {
+          this.errorMessage.set('Une erreur est survenue. Veuillez réessayer.');
+        }
       }
-    }, 1000);
+    });
   }
 }
