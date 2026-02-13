@@ -15,13 +15,19 @@ return [
     |
     */
 
-    'paths' => ['*'], // Appliquer à toutes les routes
+    'paths' => ['*'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'], // TEMP: Allow all origins
+    'allowed_origins' => [
+        'http://localhost:4200',                    // Angular dev server
+        'https://facturo-demo.vercel.app',          // Production
+        'https://facturo-demo-test.vercel.app',     // Test
+    ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '/^https:\/\/.*\.vercel\.app$/',           // Tous les sous-domaines Vercel
+    ],
 
     'allowed_headers' => ['*'],
 

@@ -6,6 +6,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { InvoiceListComponent } from './pages/invoices/invoice-list.component';
 import { InvoiceCreateComponent } from './pages/invoices/invoice-create.component';
 import { ClientListComponent } from './pages/clients/client-list.component';
+import { ClientCreateComponent } from './pages/clients/client-create.component';
 import { authGuard, publicGuard } from './core/services/auth.service';
 
 export const routes: Routes = [
@@ -30,6 +31,11 @@ export const routes: Routes = [
   { 
     path: 'clients', 
     component: ClientListComponent, 
+    canActivate: [authGuard] 
+  },
+  { 
+    path: 'clients/new', 
+    component: ClientCreateComponent, 
     canActivate: [authGuard] 
   },
   { path: '**', redirectTo: '' }

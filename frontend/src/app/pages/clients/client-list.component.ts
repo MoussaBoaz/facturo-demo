@@ -2,15 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-
-interface Client {
-  id: number;
-  name: string;
-  email: string;
-  company: string;
-  phone: string;
-  total_invoices: number;
-}
+import { ClientService, Client } from '../../core/services/client.service';
 
 @Component({
   selector: 'app-client-list',
@@ -67,74 +59,115 @@ interface Client {
             <h1 class="text-2xl font-bold text-gray-900">Clients</h1>
             <p class="mt-1 text-sm text-gray-500">Gérez vos clients</p>
           </div>
-          <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <a routerLink="/clients/new" 
+             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
             Nouveau client
-          </button>
+          </a>
         </div>
 
-        <!-- Filters -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-          <div class="flex flex-wrap gap-4">
-            <div class="flex-1 min-w-[200px]">
-              <input type="text" 
-                     placeholder="Rechercher un client..."
-                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+        <!-- Loading -->
+        @if (loading()) {
+          <div class="flex justify-center items-center h-64">
+            <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+        }
+
+        <!-- Error -->
+        @if (errorMessage()) {
+          <div class="rounded-md bg-red-50 p-4 mb-6">
+            <div class="flex">
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Erreur</h3>
+                <p class="text-sm text-red-700 mt-1">{{ errorMessage() }}</p>
+              </div>
             </div>
           </div>
-        </div>
+        }
+
+        <!-- Filters -->
+        @if (!loading()) {
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
+            <div class="flex flex-wrap gap-4">
+              <div class="flex-1 min-w-[200px]">
+                <input type="text" 
+                       placeholder="Rechercher un client..."
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+            </div>
+          </div>
+        }
 
         <!-- Clients Table -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entreprise</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléphone</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Factures</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              @for (client of clients(); track client.id) {
-                <tr class="hover:bg-gray-50 transition-colors">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <span class="text-indigo-600 font-medium">{{ getInitials(client.name) }}</span>
-                      </div>
-                      <div class="ml-4">
-                        <span class="text-sm font-medium text-gray-900">{{ client.name }}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="text-sm text-gray-900">{{ client.company }}</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="text-sm text-gray-500">{{ client.email }}</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="text-sm text-gray-500">{{ client.phone }}</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {{ client.total_invoices }} factures
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button class="text-indigo-600 hover:text-indigo-900 mr-3">Voir</button>
-                    <button class="text-gray-400 hover:text-gray-600">⋯</button>
-                  </td>
+        @if (!loading() && clients().length > 0) {
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entreprise</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléphone</th>
+                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                @for (client of clients(); track client.id) {
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                          <span class="text-indigo-600 font-medium">{{ getInitials(client.name) }}</span>
+                        </div>
+                        <div class="ml-4">
+                          <span class="text-sm font-medium text-gray-900">{{ client.name }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="text-sm text-gray-900">{{ client.company }}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="text-sm text-gray-500">{{ client.email }}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="text-sm text-gray-500">{{ client.phone }}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button class="text-indigo-600 hover:text-indigo-900 mr-3">Voir</button>
+                      <button class="text-gray-400 hover:text-gray-600">⋯</button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        <!-- Empty state -->
+        @if (!loading() && clients().length === 0) {
+          <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun client</h3>
+            <p class="mt-1 text-sm text-gray-500">Commencez par créer votre premier client.</p>
+            <div class="mt-6">
+              <a routerLink="/clients/new" 
+                 class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Nouveau client
+              </a>
+            </div>
+          </div>
+        }
       </main>
     </div>
   `
@@ -142,23 +175,45 @@ interface Client {
 export class ClientListComponent implements OnInit {
   private router = inject(Router);
   private authService: AuthService = inject(AuthService);
+  private clientService: ClientService = inject(ClientService);
   
-  clients = signal<Client[]>([
-    { id: 1, name: 'ABC Company', email: 'contact@abc.com', company: 'ABC SARL', phone: '+32 123 456 789', total_invoices: 5 },
-    { id: 2, name: 'XYZ Sarl', email: 'info@xyz.com', company: 'XYZ Industries', phone: '+32 987 654 321', total_invoices: 3 },
-    { id: 3, name: 'John Doe', email: 'john@example.com', company: 'Freelance', phone: '+32 456 789 123', total_invoices: 2 },
-    { id: 4, name: 'Acme Corp', email: 'hello@acme.com', company: 'Acme Corporation', phone: '+32 789 123 456', total_invoices: 8 },
-    { id: 5, name: 'Tech Solutions', email: 'contact@techsolutions.be', company: 'Tech Solutions BV', phone: '+32 321 654 987', total_invoices: 1 }
-  ]);
-  
-  getInitials(name: string): string {
-    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-  }
+  clients = signal<Client[]>([]);
+  loading = signal(true);
+  errorMessage = signal('');
   
   ngOnInit() {
     if (!this.authService.isAuthenticated()) {
       this.authService.logout();
+      return;
     }
+    
+    this.loadClients();
+  }
+  
+  loadClients() {
+    this.loading.set(true);
+    this.errorMessage.set('');
+    
+    this.clientService.getClients().subscribe({
+      next: (data) => {
+        this.clients.set(data);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        console.error('Load clients error:', err);
+        
+        if (err.status === 0) {
+          this.errorMessage.set('Impossible de contacter le serveur.');
+        } else {
+          this.errorMessage.set('Erreur lors du chargement des clients.');
+        }
+      }
+    });
+  }
+  
+  getInitials(name: string): string {
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   }
 
   logout(): void {
