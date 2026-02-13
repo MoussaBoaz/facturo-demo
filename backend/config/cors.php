@@ -15,22 +15,13 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['*'], // Appliquer à toutes les routes
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_filter([
-        'http://localhost:4200',                    // Angular dev server
-        env('FRONTEND_URL'),                        // Production frontend (from env)
-        'https://facturo-demo.vercel.app',          // Fallback production
-        'https://facturo-demo-test.vercel.app',     // Test deployment
-        '*',                                        // TEMP: Allow all origins for testing
-    ]),
+    'allowed_origins' => ['*'], // TEMP: Allow all origins
 
-    'allowed_origins_patterns' => [
-        // Autoriser tous les sous-domaines vercel.app pour les previews
-        '/^https:\/\/.*\.vercel\.app$/',
-    ],
+    'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 

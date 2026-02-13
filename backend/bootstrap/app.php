@@ -20,11 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
             \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
             \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        ]);
-        
-        // API middleware group
-        $middleware->api(prepend: [
-            HandleCors::class,
+            HandleCors::class, // CORS global pour toutes les routes
             SecurityHeaders::class,
         ]);
         
