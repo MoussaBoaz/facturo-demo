@@ -141,7 +141,7 @@ interface Client {
 })
 export class ClientListComponent implements OnInit {
   private router = inject(Router);
-  private authService = inject(AuthService);
+  private authService: AuthService = inject(AuthService);
   
   clients = signal<Client[]>([
     { id: 1, name: 'ABC Company', email: 'contact@abc.com', company: 'ABC SARL', phone: '+32 123 456 789', total_invoices: 5 },

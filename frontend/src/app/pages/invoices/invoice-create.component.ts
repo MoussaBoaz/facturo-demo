@@ -190,7 +190,7 @@ import { AuthService } from '../../core/services/auth.service';
 export class InvoiceCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  private authService = inject(AuthService);
+  private authService: AuthService = inject(AuthService);
   
   invoiceForm: FormGroup;
   loading = signal(false);

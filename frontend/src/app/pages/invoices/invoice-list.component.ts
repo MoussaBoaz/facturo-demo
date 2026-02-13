@@ -147,7 +147,7 @@ interface Invoice {
 })
 export class InvoiceListComponent implements OnInit {
   private router = inject(Router);
-  private authService = inject(AuthService);
+  private authService: AuthService = inject(AuthService);
   
   invoices = signal<Invoice[]>([
     { id: 1, invoice_number: 'INV-2026-0001', client_name: 'ABC Company', total: 1500, status: 'paid', issue_date: '2026-01-15', due_date: '2026-02-15' },

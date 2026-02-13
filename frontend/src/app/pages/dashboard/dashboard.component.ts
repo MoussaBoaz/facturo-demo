@@ -167,7 +167,7 @@ interface Invoice {
 })
 export class DashboardComponent implements OnInit {
   private router = inject(Router);
-  private authService = inject(AuthService);
+  private authService: AuthService = inject(AuthService);
   
   stats = signal<DashboardStats>({
     total_invoices: 12,
